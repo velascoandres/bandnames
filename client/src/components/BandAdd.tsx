@@ -1,31 +1,34 @@
-import React, { useState } from 'react'
-
-export type BandAddProps = {
-    addBand: (name: string) => void;
-};
+import React, { useContext, useState } from 'react'
+import { SocketContext } from '../context/SocketContext';
+import { ISocketContext } from '../interfaces/socketContext.interface';
 
 
-export const BandAdd: React.FC<BandAddProps> = ({addBand}: BandAddProps) => {
+
+
+export const BandAdd: React.FC = () => {
 
 
     const [name, setName] = useState<string>();
-    
+    const { socket } = useContext<ISocketContext>(SocketContext);
+
+
     const onSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if (name && name.trim().length > 0){
-            addBand(name);
+        if (name && name.trim().length > 0) {
+            // addBand(name);
+            socket.emit('add-band', { name });
             setName('');
         }
     };
 
-    
+
     return (
         <>
             <h3>Add Band</h3>
             <form onSubmit={onSubmit}>
                 <input
                     type="text"
-                    name="name" 
+                    name="name"
                     className="form-control"
                     placeholder="Nuevo nombre de banda"
                     value={name}

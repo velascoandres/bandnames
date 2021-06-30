@@ -1,22 +1,30 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { SocketContext } from '../context/SocketContext';
 import { IBand } from '../interfaces/band.interface';
 
-type BandListProps = {
-    bands: IBand[];
-    voteBand: (id: string) => void;
-    deleteBand: (id: string) => void;
-    changeName: (id: string, name: string) => void;
-}
 
 
-export const BandList: React.FC<BandListProps> = ({ bands, voteBand, deleteBand, changeName }: BandListProps) => {
+export const BandList: React.FC = () => {
 
+    
 
-    const [bandCollection, setBandCollection] = useState<IBand[]>(bands);
+    const [bandCollection, setBandCollection] = useState<IBand[]>([]);
 
     useEffect(() => {
-        setBandCollection(bands);
-    }, [bands]);
+        setBandCollection(bandCollection);
+    }, [bandCollection]);
+
+    const { socket } = useContext(SocketContext);
+
+    useEffect(() => {
+
+        socket.on(
+          'current-bands', (bands: IBand[]) => {
+            setBandCollection(bands);
+          },
+        );
+    
+      }, [socket]);
 
     const nameChanges = (event: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const newName = event.target.value;
@@ -35,6 +43,19 @@ export const BandList: React.FC<BandListProps> = ({ bands, voteBand, deleteBand,
     const onUnfocus = (id: string, name: string) => {
         changeName(id, name);
     };
+
+    const voteBand = (id: string) => {
+        socket.emit('vote-band', { id });
+    }
+
+    const deleteBand = (id: string) => {
+        socket.emit('delete-band', { id });
+    }
+
+    const changeName = (id: string, name: string) => {
+        socket.emit('change-band-name', { id, name });
+    }
+
 
     const createRows = () => {
 
