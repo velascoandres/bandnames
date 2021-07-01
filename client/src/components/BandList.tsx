@@ -6,25 +6,25 @@ import { IBand } from '../interfaces/band.interface';
 
 export const BandList: React.FC = () => {
 
-    
 
     const [bandCollection, setBandCollection] = useState<IBand[]>([]);
+    const { socket } = useContext(SocketContext);
+
 
     useEffect(() => {
         setBandCollection(bandCollection);
     }, [bandCollection]);
 
-    const { socket } = useContext(SocketContext);
 
     useEffect(() => {
-
         socket.on(
-          'current-bands', (bands: IBand[]) => {
-            setBandCollection(bands);
-          },
-        );
-    
-      }, [socket]);
+            'current-bands', (bands: IBand[]) => {
+                setBandCollection(bands);
+        });
+        return () => {
+            socket.off('current-bands');
+        };
+    }, [socket]);
 
     const nameChanges = (event: React.ChangeEvent<HTMLInputElement>, id: string) => {
         const newName = event.target.value;
@@ -42,7 +42,7 @@ export const BandList: React.FC = () => {
 
     const onUnfocus = (id: string, name: string) => {
         changeName(id, name);
-    };
+    }
 
     const voteBand = (id: string) => {
         socket.emit('vote-band', { id });

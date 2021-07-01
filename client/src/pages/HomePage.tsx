@@ -1,6 +1,7 @@
 import React, { useContext } from 'react';
 
 import { BandAdd } from '../components/BandAdd';
+import { BandChart } from '../components/BandChart';
 import { BandList } from '../components/BandList';
 import { SocketContext } from '../context/SocketContext';
 import { ISocketContext } from '../interfaces/socketContext.interface';
@@ -10,12 +11,7 @@ import { ISocketContext } from '../interfaces/socketContext.interface';
 function HomePage() {
 
 
-
   const { online } = useContext<ISocketContext>(SocketContext);
-
-
-
-
 
   return (
     <div className="container">
@@ -33,7 +29,6 @@ function HomePage() {
                 Offline
               </span>
           }
-
         </p>
       </div>
 
@@ -41,11 +36,17 @@ function HomePage() {
       <hr />
 
       <div className="row">
+        <div className="col">
+          <BandChart />
+        </div>
+      </div>
+
+      <div className="row">
         <div className="col-8">
           <BandList />
         </div>
         <div className="col-4">
-          <BandAdd/>
+          <BandAdd />
         </div>
       </div>
 
