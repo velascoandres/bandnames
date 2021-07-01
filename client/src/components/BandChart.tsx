@@ -70,12 +70,12 @@ export const BandChart: React.FC = () => {
                 indexAxis: 'y',
             },
         };
-        const ctx = document.getElementById('myChart');
+        const ctx = document.getElementById('myChart') as HTMLCanvasElement;
         if (typeof myChart !== 'undefined') {
             myChart.destroy();
         }
         myChart = new Chart(
-            (document.getElementById('myChart') as HTMLCanvasElement),
+            ctx,
             config,
         );
     }
